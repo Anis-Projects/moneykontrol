@@ -13,22 +13,31 @@ public class Login {
 		this.userService = userService;
 	}
 
-	public void display() {
-		System.out.println("----MONEY KONTROL LOGIN----");
+	public boolean display() {
+		System.out.println("\n============================");
+		System.out.println("      MONEY KONTROL LOGIN      ");
+		System.out.println("============================");
 		System.out.println("Enter your username:");
 		var username = scanner.nextLine();
 		System.out.println("Enter your password:");
 		var password = scanner.nextLine();
 		showLoading(3);
 
+		return authenticateUser(username, password);
+	}
+
+	public boolean authenticateUser(String username, String password) {
 		var user = userService.findUserByUsername(username);
 		if (user == null) {
 			System.out.println("User not found");
+			return false;
 		} else {
 			if(password.equals(user.getPassword())) {
 				System.out.println("Successfully Login! Hello: " + username);
+				return true;
 			} else {
 				System.out.println("Invalid Username/Password!");
+				return false;
 			}
 		}
 	}

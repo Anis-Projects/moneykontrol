@@ -4,29 +4,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
-import entity.Income;
-import service.IncomeService;
+import entity.Expense;
+import service.ExpenseService;
 import util.InputValidation;
 import util.LoadingAnimation;
 
-public class IncomePage {
+public class ExpensePage {
+	private final ExpenseService expenseService;
 	private final Scanner scanner;
-	private final IncomeService incomeService;
 	private final int userId;
 	private final InputValidation inputValidation;
 
-	public IncomePage(IncomeService incomeService,Scanner scanner, int userId, InputValidation inputValidation) {
-		this.incomeService = incomeService;
+	public ExpensePage(ExpenseService expenseService, Scanner scanner, int userId, InputValidation inputValidation) {
+		this.expenseService = expenseService;
 		this.scanner = scanner;
 		this.userId = userId;
 		this.inputValidation = inputValidation;
 	}
 
 	public boolean display() {
-		boolean exitIncomePage = false;
+		boolean exitExpensePage = false;
 
-		while(!exitIncomePage) {
-			listIncome();
+		while(!exitExpensePage) {
+			listExpense();
 
 			System.out.println("\nPlease choose an option:");
 			System.out.println("1. Add new record");
@@ -40,16 +40,16 @@ public class IncomePage {
 
 			switch (choice) {
 				case 1:
-					createIncome();
+					createExpense();
 					break;
 				case 2:
-					updateIncome();
+					updateExpense();
 					break;
 				case 3:
-					deleteIncome();
+					deleteExpense();
 					break;
 				case 5:
-					exitIncomePage = true;
+					exitExpensePage = true;
 					break;
 				default:
 					System.out.println("Invalid choice");
@@ -57,63 +57,64 @@ public class IncomePage {
 			}
 
 		}
-		return exitIncomePage;
+		return false;
 	}
 
-	private void listIncome() {
-		List<Income> incomeList = incomeService.findAllIncomeByUserId(userId);
+
+	private void listExpense() {
+		List<Expense> expenseList = expenseService.findAllExpenseByUserId(userId);
 		System.out.println("\n============================");
-		System.out.println("      MANAGE INCOME      ");
+		System.out.println("      MANAGE EXPENSE      ");
 		System.out.println("============================");
 
-		System.out.printf("\n%-10s%-20s %-30s %-20s%n", "ID", "AMOUNT OF INCOME", "SOURCE", "CREATED AT");
+		System.out.printf("\n%-10s%-20s %-30s %-20s%n", "ID", "AMOUNT", "TYPE", "CREATED AT");
 		System.out.println("-----------------------------------------------------------------------------");
 
 		var formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 
-		for (var income : incomeList) {
-			var formattedDate = income.getCreatedAt().format(formatter);
+		for (var expense : expenseList) {
+			var formattedDate = expense.getCreatedAt().format(formatter);
 			System.out.printf("%-10d %-20.2f %-30s %-20s%n",
-					income.getId() ,income.getAmount(), income.getSource(), formattedDate);
+					expense.getId() ,expense.getAmount(), expense.getType().toString(), formattedDate);
 		}
 	}
 
-	private void createIncome() {
+	private void createExpense() {
 		System.out.println("\n============================");
-		System.out.println("      ADD NEW INCOME      ");
+		System.out.println("      ADD NEW EXPENSE      ");
 		System.out.println("============================");
 		var amount = inputValidation.validateInputAmount();
-		var source = inputValidation.validateInputSource();
+		var type = inputValidation.validateInputExpenseType();
 
-		LoadingAnimation.showLoading("Creating income record", 2);
-		incomeService.createIncome(amount, userId, source);
+		LoadingAnimation.showLoading("Creating expense record", 2);
+		expenseService.createExpense(amount, userId, type);
 		LoadingAnimation.pause();
 	}
 
-	private void updateIncome() {
+	private void updateExpense() {
 		System.out.println("\n============================");
-		System.out.println("     UPDATE INCOME      ");
+		System.out.println("     UPDATE EXPENSE      ");
 		System.out.println("============================");
-		System.out.print("Enter the ID of the income to update: ");
-		var incomeId = scanner.nextInt();
+		System.out.print("Enter the ID of the expense to update: ");
+		var expenseId = scanner.nextInt();
 		scanner.nextLine();
 
 		var updateAmount = inputValidation.validateInputAmount();
-		var updateSource = inputValidation.validateInputSource();
+		var updateType = inputValidation.validateInputExpenseType();
 
-		LoadingAnimation.showLoading("Updating income record", 2);
-		incomeService.updateIncome(incomeId, updateAmount, updateSource);
+		LoadingAnimation.showLoading("Updating expense record", 2);
+		expenseService.updateExpense(expenseId, updateAmount, updateType);
 		LoadingAnimation.pause();
 	}
 
-	private void deleteIncome() {
+	private void deleteExpense() {
 		System.out.println("\n============================");
-		System.out.println("     DELETE INCOME      ");
+		System.out.println("     DELETE EXPENSE      ");
 		System.out.println("============================");
-		System.out.print("Enter the ID of the income to delete: ");
-		var incomeId = scanner.nextInt();
+		System.out.print("Enter the ID of the expense to delete: ");
+		var expenseId = scanner.nextInt();
 
-		var isExist = incomeService.existsById(incomeId);
+		var isExist = expenseService.existsById(expenseId);
 
 		if(isExist) {
 			System.out.println("Are you sure you want to delete this record");
@@ -124,18 +125,18 @@ public class IncomePage {
 			var choice = scanner.nextInt();
 			switch (choice) {
 				case 1:
-					LoadingAnimation.showLoading("Deleting income record", 2);
-					incomeService.deleteIncome(incomeId);
+					LoadingAnimation.showLoading("Deleting expense record", 2);
+					expenseService.deleteExpense(expenseId);
 					break;
 				case 2:
 					System.out.println("Deletion canceled.");
 					break;
 				default:
 					System.out.println("Invalid choice. Please try again");
-					deleteIncome();
+					deleteExpense();
 			}
 		}else {
-			System.out.println("Income ID not found. Please try again.");
+			System.out.println("Expense ID not found. Please try again.");
 		}
 		LoadingAnimation.pause();
 		scanner.nextLine();

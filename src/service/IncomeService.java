@@ -22,12 +22,9 @@ public class IncomeService {
 		return incomeRepository.getAllIncomeByUserId(userId);
 	}
 
-	public String updateIncome(int incomeId, double amount, String source) {
+	public void updateIncome(int incomeId, double amount, String source) {
 		if (incomeRepository.existsById(incomeId)) {
 			incomeRepository.updateIncome(incomeId, amount, source);
-			return "Income updated successfully.";
-		} else {
-			return "Error: ID does not exist.";
 		}
 	}
 

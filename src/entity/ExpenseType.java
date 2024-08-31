@@ -6,5 +6,14 @@ public enum ExpenseType {
 	RENT,
 	ELECTRICITY,
 	OTHERS,
-	INTERNET
+	INTERNET;
+
+	public static ExpenseType fromString(String type) {
+		for (ExpenseType expenseType : ExpenseType.values()) {
+			if (expenseType.name().equalsIgnoreCase(type)) {
+				return expenseType;
+			}
+		}
+		throw new IllegalArgumentException("Unknown expense type: " + type);
+	}
 }

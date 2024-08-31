@@ -35,4 +35,8 @@ public class IncomeService {
 	public void deleteIncome(int incomeId) {
 		incomeRepository.deleteIncome(incomeId);
 	}
+
+	public Double getTotalIncomeThisMonth(int userId) {
+		return incomeRepository.calculateUserTotalIncome(userId);
+	}
 }

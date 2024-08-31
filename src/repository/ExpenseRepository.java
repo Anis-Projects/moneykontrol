@@ -11,4 +11,5 @@ public interface ExpenseRepository {
 	void updateExpense(int id, double amount, ExpenseType type);
 	boolean existsById(int id);
 	void deleteExpense(int id);
+	List<Expense> getAllExpenseByUserIdThisMonth(int userId);
 }

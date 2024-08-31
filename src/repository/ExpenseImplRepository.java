@@ -40,7 +40,9 @@ public class ExpenseImplRepository implements ExpenseRepository{
 
 	@Override
 	public List<Expense> getAllExpenseByUserId(int userId) {
-		var sqlCommand = "SELECT * FROM expense WHERE user_id = ? AND deletedAt IS NULL";
+		var sqlCommand = "SELECT * FROM expense "
+				+ "WHERE user_id = ? AND deletedAt IS NULL "
+				+ "ORDER BY createdAt DESC";
 		List<Expense> expenseList = new ArrayList<>();
 
 		try (Connection connection = DatabaseUtil.connectToDb();
@@ -96,7 +98,7 @@ public class ExpenseImplRepository implements ExpenseRepository{
 
 	@Override
 	public boolean existsById(int id) {
-		var sqlCommand = "SELECT COUNT(*) FROM expense WHERE id = ?";
+		var sqlCommand = "SELECT COUNT(*) FROM expense WHERE id = ? AND deletedAt IS NULL";
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
 
@@ -139,5 +141,41 @@ public class ExpenseImplRepository implements ExpenseRepository{
 		} catch (SQLException e) {
 			System.out.println("An error occurred while deleting expense.");
 		}
+	}
+
+	@Override
+	public List<Expense> getAllExpenseByUserIdThisMonth(int userId) {
+		var sqlCommand = "SELECT * FROM expense " +
+					"WHERE user_id = ? " +
+					"AND YEAR(createdAt) = YEAR(CURDATE()) " +
+					"AND MONTH(createdAt) = MONTH(CURDATE())";
+		List<Expense> expenseList = new ArrayList<>();
+
+		try (Connection connection = DatabaseUtil.connectToDb();
+				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
+
+			statement.setInt(1, userId);
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+				while (resultSet.next()) {
+					var expense = new Expense(
+							resultSet.getInt("id"),
+							resultSet.getInt("user_id"),
+							resultSet.getDouble("amount"),
+							ExpenseType.fromString(resultSet.getString("type")),
+							resultSet.getTimestamp("createdAt").toLocalDateTime(),
+							resultSet.getTimestamp("updatedAt").toLocalDateTime(),
+							resultSet.getTimestamp("deletedAt") != null ?
+									resultSet.getTimestamp("deletedAt").toLocalDateTime() : null
+					);
+					expenseList.add(expense);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.print("Please try again later...");
+			e.printStackTrace();
+		}
+
+		return expenseList;
 	}
 }

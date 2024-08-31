@@ -95,7 +95,7 @@ public class SavingsImplRepository implements SavingsRepository{
 
 	@Override
 	public boolean existsById(int id) {
-		var sqlCommand = "SELECT COUNT(*) FROM savings WHERE id = ?";
+		var sqlCommand = "SELECT COUNT(*) FROM savings WHERE id = ? AND deletedAt IS NULL";
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
 
@@ -138,5 +138,29 @@ public class SavingsImplRepository implements SavingsRepository{
 		} catch (SQLException e) {
 			System.out.println("An error occurred while deleting savings.");
 		}
+	}
+
+	@Override
+	public Double calculateUserTotalSavings(int userId) {
+		var sqlCommand = "SELECT SUM(amount) FROM savings " +
+				"WHERE user_id = ? AND deletedAt IS NULL " +
+				"AND YEAR(createdAt) = YEAR(CURDATE()) " +
+				"AND MONTH(createdAt) = MONTH(CURDATE())";
+		double totalAmount = 0.0;
+
+		try (Connection connection = DatabaseUtil.connectToDb();
+				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
+
+			statement.setInt(1, userId);
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					totalAmount = resultSet.getDouble(1);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("An error occurred while checking existence.");
+		}
+		return totalAmount;
 	}
 }

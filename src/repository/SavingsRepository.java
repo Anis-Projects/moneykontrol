@@ -10,4 +10,5 @@ public interface SavingsRepository {
 	void updateSavings(int id, double amount, String description);
 	boolean existsById(int id);
 	void deleteSavings(int id);
+	Double calculateUserTotalSavings(int userId);
 }

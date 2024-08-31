@@ -11,8 +11,6 @@ public class DatabaseUtil {
 		String user = "budget_user";
 		String password = "budget_pass";
 
-		//		System.out.println("Connected to the database!");
-
 		return DriverManager.getConnection(url, user, password);
 	}
 }

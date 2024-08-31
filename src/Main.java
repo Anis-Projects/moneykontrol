@@ -1,11 +1,14 @@
 import java.util.Scanner;
 
+import pages.ExpensePage;
 import pages.IncomePage;
 import pages.IndexPage;
 import pages.LoginPage;
 import pages.MenuPage;
+import repository.ExpenseImplRepository;
 import repository.IncomeImplRepository;
 import repository.UserImplRepository;
+import service.ExpenseService;
 import service.IncomeService;
 import service.UserService;
 import util.InputValidation;
@@ -16,6 +19,8 @@ public class Main {
 		var userService = new UserService(userRepository);
 		var incomeRepository = new IncomeImplRepository();
 		var incomeService = new IncomeService(incomeRepository);
+		var expenseRepository = new ExpenseImplRepository();
+		var expenseService = new ExpenseService(expenseRepository);
 		var scanner = new Scanner(System.in);
 
 		var indexPage = new IndexPage(scanner);
@@ -30,13 +35,14 @@ public class Main {
 				case 1:
 					var authenticationResult = loginPage.display();
 					if (authenticationResult.isAuthenticated()) {
-						int userId = authenticationResult.getUserId();
+						var userId = authenticationResult.getUserId();
 						var menuPage = new MenuPage(scanner, userId);
 						var incomePage = new IncomePage(incomeService, scanner, userId, inputValidation);
+						var expensePage = new ExpensePage(expenseService, scanner, userId, inputValidation);
 						boolean exitMenu = false;
 
 						while (!exitMenu) {
-							int menuChoice = menuPage.display();
+							var menuChoice = menuPage.display();
 							switch (menuChoice) {
 								case 1:
 									boolean exitIncomePage = false;
@@ -45,7 +51,10 @@ public class Main {
 									}
 									break;
 								case 2:
-									System.out.println("Manage Expenses");
+									boolean exitExpensePage = false;
+									while (!exitExpensePage) {
+										exitExpensePage = expensePage.display();
+									}
 									break;
 								case 3:
 									System.out.println("Manage Savings");
@@ -75,5 +84,4 @@ public class Main {
 			}
 		}
 	}
-
 }

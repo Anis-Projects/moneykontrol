@@ -9,32 +9,39 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.Income;
-import entity.User;
+import entity.Expense;
+import entity.ExpenseType;
 import util.DatabaseUtil;
 
-public class IncomeImplRepository implements IncomeRepository{
+public class ExpenseImplRepository implements ExpenseRepository{
 
 	@Override
-	public void addIncome(double amount, int userId, String source) {
-		var sqlCommand = "INSERT INTO income (`amount`,`user_id`,`source`) VALUES (?,?,?)";
+	public void addExpense(double amount, int userId, ExpenseType type) {
+		var sqlCommand = "INSERT INTO expense (`amount`,`user_id`,`type`) VALUES (?,?,?)";
 
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
 
 			statement.setDouble(1, amount);
 			statement.setInt(2, userId);
-			statement.setString(3, source);
+			statement.setString(3, type.toString());
 
+			var rowsAffected = statement.executeUpdate();
+
+			if (rowsAffected > 0) {
+				System.out.println("Expense added successfully.");
+			} else {
+				System.out.println("Failed to add expense.");
+			}
 		} catch (SQLException e) {
-			System.out.println("An error occurred while adding income.");
+			System.out.println("An error occurred while adding expense.");
 		}
 	}
 
 	@Override
-	public List<Income> getAllIncomeByUserId(int userId) {
-		var sqlCommand = "SELECT * FROM income WHERE user_id = ? AND deletedAt IS NULL";
-		List<Income> incomeList = new ArrayList<>();
+	public List<Expense> getAllExpenseByUserId(int userId) {
+		var sqlCommand = "SELECT * FROM expense WHERE user_id = ? AND deletedAt IS NULL";
+		List<Expense> expenseList = new ArrayList<>();
 
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
@@ -43,17 +50,17 @@ public class IncomeImplRepository implements IncomeRepository{
 
 			try (ResultSet resultSet = statement.executeQuery()) {
 				while (resultSet.next()) {
-					var income = new Income(
+					var expense = new Expense(
 							resultSet.getInt("id"),
 							resultSet.getInt("user_id"),
 							resultSet.getDouble("amount"),
-							resultSet.getString("source"),
+							ExpenseType.fromString(resultSet.getString("type")),
 							resultSet.getTimestamp("createdAt").toLocalDateTime(),
 							resultSet.getTimestamp("updatedAt").toLocalDateTime(),
 							resultSet.getTimestamp("deletedAt") != null ?
 									resultSet.getTimestamp("deletedAt").toLocalDateTime() : null
 					);
-					incomeList.add(income);
+					expenseList.add(expense);
 				}
 			}
 		} catch (SQLException e) {
@@ -61,28 +68,35 @@ public class IncomeImplRepository implements IncomeRepository{
 			e.printStackTrace();
 		}
 
-		return incomeList;
+		return expenseList;
 	}
 
 	@Override
-	public void updateIncome(int id,double amount, String source) {
-		var sqlCommand = "UPDATE income SET amount=?, source=? WHERE id=? ";
+	public void updateExpense(int id,double amount, ExpenseType type) {
+		var sqlCommand = "UPDATE expense SET amount=?, type=? WHERE id=? ";
 
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
 
 			statement.setDouble(1, amount);
-			statement.setString(2, source);
+			statement.setString(2, type.toString());
 			statement.setInt(3, id);
 
+			var rowsAffected = statement.executeUpdate();
+
+			if (rowsAffected > 0) {
+				System.out.println("Expense updated successfully.");
+			} else {
+				System.out.println("Failed to updated expense.");
+			}
 		} catch (SQLException e) {
-			System.out.println("An error occurred while adding income.");
+			System.out.println("An error occurred while updating expense.");
 		}
 	}
 
 	@Override
 	public boolean existsById(int id) {
-		var sqlCommand = "SELECT COUNT(*) FROM income WHERE id = ?";
+		var sqlCommand = "SELECT COUNT(*) FROM expense WHERE id = ?";
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
 
@@ -106,8 +120,8 @@ public class IncomeImplRepository implements IncomeRepository{
 	}
 
 	@Override
-	public void deleteIncome(int id) {
-		var sqlCommand = "UPDATE income SET  deletedAt=? WHERE id=? ";
+	public void deleteExpense(int id) {
+		var sqlCommand = "UPDATE expense SET  deletedAt=? WHERE id=? ";
 
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
@@ -118,12 +132,12 @@ public class IncomeImplRepository implements IncomeRepository{
 			var rowsAffected = statement.executeUpdate();
 
 			if (rowsAffected > 0) {
-				System.out.println("Income deleted successfully.");
+				System.out.println("Expense deleted successfully.");
 			} else {
-				System.out.println("Failed to delete income.");
+				System.out.println("Failed to delete expense.");
 			}
 		} catch (SQLException e) {
-			System.out.println("An error occurred while deleting income.");
+			System.out.println("An error occurred while deleting expense.");
 		}
 	}
 }

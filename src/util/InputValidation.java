@@ -2,6 +2,8 @@ package util;
 
 import java.util.Scanner;
 
+import entity.ExpenseType;
+
 public class InputValidation {
 	private final Scanner scanner;
 
@@ -41,6 +43,34 @@ public class InputValidation {
 			}
 		}
 		return source;
+	}
+
+	public ExpenseType validateInputExpenseType() {
+		int choice;
+		ExpenseType selectedType = null;
+		while (true) {
+			System.out.println("EXPENSE TYPE LIST");
+			for (ExpenseType type : ExpenseType.values()) {
+				System.out.println((type.ordinal() + 1) + ". " + type.name());
+			}
+			System.out.print("Please select an expense type:");
+			if (scanner.hasNextInt()) {
+				choice = scanner.nextInt();
+				scanner.nextLine();
+
+				if (choice >= 1 && choice <= ExpenseType.values().length) {
+					selectedType = ExpenseType.values()[choice - 1];
+					System.out.println("You selected: " + selectedType.name());
+					break;
+				} else {
+					System.out.println("Invalid choice. Please try again.");
+				}
+			} else {
+				System.out.println("Invalid input. Please enter a number.");
+				scanner.nextLine();
+			}
+		}
+		return selectedType;
 	}
 
 

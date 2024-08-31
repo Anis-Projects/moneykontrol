@@ -3,17 +3,19 @@ package pages;
 import java.util.Scanner;
 
 import service.UserService;
+import util.AuthenticationResult;
+import util.LoadingAnimation;
 
-public class Login {
+public class LoginPage {
 	private final Scanner scanner;
 	private final UserService userService;
 
-	public Login(UserService userService, Scanner scanner) {
+	public LoginPage(UserService userService, Scanner scanner) {
 		this.scanner = scanner;
 		this.userService = userService;
 	}
 
-	public boolean display() {
+	public AuthenticationResult display() {
 		System.out.println("\n============================");
 		System.out.println("      MONEY KONTROL LOGIN      ");
 		System.out.println("============================");
@@ -21,44 +23,27 @@ public class Login {
 		var username = scanner.nextLine();
 		System.out.println("Enter your password:");
 		var password = scanner.nextLine();
-		showLoading(3);
+		LoadingAnimation.showLoading("Authenticating",2);
 
 		return authenticateUser(username, password);
 	}
 
-	public boolean authenticateUser(String username, String password) {
+	public AuthenticationResult authenticateUser(String username, String password) {
 		var user = userService.findUserByUsername(username);
 		if (user == null) {
 			System.out.println("User not found");
-			return false;
+			return new AuthenticationResult(false, -1);
 		} else {
 			if(password.equals(user.getPassword())) {
 				System.out.println("Successfully Login! Hello: " + username);
-				return true;
+				return new AuthenticationResult(true, user.getId());
 			} else {
 				System.out.println("Invalid Username/Password!");
-				return false;
+				return new AuthenticationResult(false, -1);
 			}
 		}
 	}
 
-	private void showLoading(int duration) {
-		final String[] loading = {".", "..", "...", "...."};
-		var endTime = System.currentTimeMillis() + duration * 1000;
-		var index = 0;
 
-		while (System.currentTimeMillis() < endTime) {
-			System.out.print("\rAuthenticating" + loading[index]);
-			index = (index + 1) % loading.length;
-
-			try {
-				Thread.sleep(250);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-
-		System.out.println("\rAuthenticating    ");
-	}
 
 }

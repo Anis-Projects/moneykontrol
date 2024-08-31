@@ -2,10 +2,10 @@ package pages;
 
 import java.util.Scanner;
 
-public class Index {
+public class IndexPage {
 	private final Scanner scanner;
 
-	public Index(Scanner scanner) {
+	public IndexPage(Scanner scanner) {
 		this.scanner = scanner;
 	}
 

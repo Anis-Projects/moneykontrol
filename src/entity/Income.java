@@ -5,17 +5,25 @@ import java.time.LocalDateTime;
 public class Income {
 	private int id;
 	private int userId;
+	private double amount;
 	private String source;
 	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private LocalDateTime deletedAt;
 
 	public Income() {
 
 	}
 
-	public Income(int userId,String source, LocalDateTime createdAt) {
+	public Income(int id, int userId, double amount, String source,
+			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+		this.id = id;
 		this.userId = userId;
+		this.amount = amount;
 		this.source = source;
 		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.deletedAt = deletedAt;
 	}
 
 	public int getId() {
@@ -24,6 +32,10 @@ public class Income {
 
 	public int getUserId() {
 		return userId;
+	}
+
+	public double getAmount() {
+		return amount;
 	}
 
 	public String getSource() {
@@ -36,6 +48,10 @@ public class Income {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
 	public void setUserId(int userId) {

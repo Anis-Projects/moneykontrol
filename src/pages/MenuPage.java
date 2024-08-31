@@ -2,18 +2,16 @@ package pages;
 
 import java.util.Scanner;
 
-import service.UserService;
-
-public class Menu {
+public class MenuPage {
 	private final Scanner scanner;
-	private final UserService userService;
+	private final int userId;
 
-	public Menu(UserService userService, Scanner scanner) {
+	public MenuPage(Scanner scanner, int userId) {
 		this.scanner = scanner;
-		this.userService = userService;
+		this.userId = userId;
 	}
 
-	public boolean display() {
+	public int display() {
 		System.out.println("\n============================");
 		System.out.println("      MONEY KONTROL MENU      ");
 		System.out.println("============================");
@@ -27,26 +25,7 @@ public class Menu {
 		System.out.print("Enter your choice: ");
 		var choice = scanner.nextInt();
 
-		switch (choice) {
-			case 1:
-				System.out.println("Manage Income");
-				break;
-			case 2:
-				System.out.println("Manage Expenses");
-				break;
-			case 3:
-				System.out.println("Manage Savings");
-				break;
-			case 4:
-				System.out.println("Generate Monthly Report");
-				break;
-			case 5:
-				return true;
-			default:
-				System.out.println("Invalid choice");
-				break;
-		}
-		return false;
+		return choice;
 	}
 
 

@@ -1,19 +1,29 @@
 package entity;
 
+import java.time.LocalDateTime;
+
 public class Savings {
 	private int id;
 	private int userId;
 	private double amount;
 	private String description;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private LocalDateTime deletedAt;
 
 	public Savings() {
 
 	}
 
-	public Savings(int userId,double amount, String description) {
+	public Savings(int id, int userId, double amount, String description,
+			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+		this.id = id;
 		this.userId = userId;
 		this.amount = amount;
 		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.deletedAt = deletedAt;
 	}
 
 	public int getId() {
@@ -32,6 +42,10 @@ public class Savings {
 		return description;
 	}
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -46,5 +60,9 @@ public class Savings {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 }

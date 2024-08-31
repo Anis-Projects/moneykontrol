@@ -73,5 +73,17 @@ public class InputValidation {
 		return selectedType;
 	}
 
-
+	public String validateInputDescription() {
+		String description = "";
+		while (true) {
+			System.out.print("Enter your description: ");
+			description = scanner.nextLine();
+			if (!description.trim().isEmpty()) {
+				break;
+			} else {
+				System.out.println("Description cannot be empty. Please try again.");
+			}
+		}
+		return description;
+	}
 }

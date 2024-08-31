@@ -5,11 +5,14 @@ import pages.IncomePage;
 import pages.IndexPage;
 import pages.LoginPage;
 import pages.MenuPage;
+import pages.SavingsPage;
 import repository.ExpenseImplRepository;
 import repository.IncomeImplRepository;
+import repository.SavingsImplRepository;
 import repository.UserImplRepository;
 import service.ExpenseService;
 import service.IncomeService;
+import service.SavingsService;
 import service.UserService;
 import util.InputValidation;
 
@@ -21,6 +24,8 @@ public class Main {
 		var incomeService = new IncomeService(incomeRepository);
 		var expenseRepository = new ExpenseImplRepository();
 		var expenseService = new ExpenseService(expenseRepository);
+		var savingsRepository = new SavingsImplRepository();
+		var savingsService = new SavingsService(savingsRepository);
 		var scanner = new Scanner(System.in);
 
 		var indexPage = new IndexPage(scanner);
@@ -39,6 +44,7 @@ public class Main {
 						var menuPage = new MenuPage(scanner, userId);
 						var incomePage = new IncomePage(incomeService, scanner, userId, inputValidation);
 						var expensePage = new ExpensePage(expenseService, scanner, userId, inputValidation);
+						var savingsPage = new SavingsPage(savingsService, scanner, userId, inputValidation);
 						boolean exitMenu = false;
 
 						while (!exitMenu) {
@@ -57,7 +63,10 @@ public class Main {
 									}
 									break;
 								case 3:
-									System.out.println("Manage Savings");
+									boolean exitSavingsPage = false;
+									while (!exitSavingsPage) {
+										exitSavingsPage = savingsPage.display();
+									}
 									break;
 								case 4:
 									System.out.println("Generate Monthly Report");

@@ -34,4 +34,8 @@ public class ExpenseService {
 	public void deleteExpense(int incomeId) {
 		incomeRepository.deleteExpense(incomeId);
 	}
+
+	public List<Expense> findAllExpenseByUserIdThisMonth(int userId) {
+		return incomeRepository.getAllExpenseByUserIdThisMonth(userId);
+	}
 }

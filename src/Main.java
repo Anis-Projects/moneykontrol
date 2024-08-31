@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 import pages.ExpensePage;
+import pages.GenerateReportPage;
 import pages.IncomePage;
 import pages.IndexPage;
 import pages.LoginPage;
@@ -45,6 +46,8 @@ public class Main {
 						var incomePage = new IncomePage(incomeService, scanner, userId, inputValidation);
 						var expensePage = new ExpensePage(expenseService, scanner, userId, inputValidation);
 						var savingsPage = new SavingsPage(savingsService, scanner, userId, inputValidation);
+						var generateReportPage = new GenerateReportPage(expenseService, savingsService, incomeService,
+								scanner, userId, inputValidation);
 						boolean exitMenu = false;
 
 						while (!exitMenu) {
@@ -69,7 +72,7 @@ public class Main {
 									}
 									break;
 								case 4:
-									System.out.println("Generate Monthly Report");
+									generateReportPage.display();
 									break;
 								case 5:
 									exitMenu = true;

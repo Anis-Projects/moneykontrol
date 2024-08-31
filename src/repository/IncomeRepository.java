@@ -10,4 +10,5 @@ public interface IncomeRepository {
 	void updateIncome(int id, double amount, String source);
 	boolean existsById(int id);
 	void deleteIncome(int id);
+	Double calculateUserTotalIncome(int userId);
 }

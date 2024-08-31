@@ -97,7 +97,7 @@ public class IncomeImplRepository implements IncomeRepository{
 
 	@Override
 	public boolean existsById(int id) {
-		var sqlCommand = "SELECT COUNT(*) FROM income WHERE id = ?";
+		var sqlCommand = "SELECT COUNT(*) FROM income WHERE id = ? AND deletedAt IS NULL";
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
 
@@ -140,5 +140,29 @@ public class IncomeImplRepository implements IncomeRepository{
 		} catch (SQLException e) {
 			System.out.println("An error occurred while deleting income.");
 		}
+	}
+
+	@Override
+	public Double calculateUserTotalIncome(int userId) {
+		var sqlCommand = "SELECT SUM(amount) FROM income " +
+				"WHERE user_id = ? AND deletedAt IS NULL " +
+				"AND YEAR(createdAt) = YEAR(CURDATE()) " +
+				"AND MONTH(createdAt) = MONTH(CURDATE())";
+		double totalAmount = 0.0;
+
+		try (Connection connection = DatabaseUtil.connectToDb();
+				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
+
+			statement.setInt(1, userId);
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					totalAmount = resultSet.getDouble(1);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("An error occurred while checking existence.");
+		}
+		return totalAmount;
 	}
 }

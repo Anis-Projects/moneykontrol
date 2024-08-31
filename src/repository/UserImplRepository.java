@@ -20,7 +20,7 @@ public class UserImplRepository implements UserRepository{
 
 	@Override
 	public User findUserByUsername(String username) {
-		var sqlCommand = "SELECT * FROM user WHERE username = ?";
+		var sqlCommand = "SELECT * FROM user WHERE username = ? AND deletedAt IS NULL";
 
 		try (Connection connection = DatabaseUtil.connectToDb();
 				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {

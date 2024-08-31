@@ -33,4 +33,8 @@ public class SavingsService {
 	public void deleteSavings(int savingsId) {
 		savingsRepository.deleteSavings(savingsId);
 	}
+
+	public Double getTotalExpectedSavings(int userId) {
+		return savingsRepository.calculateUserTotalSavings(userId);
+	}
 }

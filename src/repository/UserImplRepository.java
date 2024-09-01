@@ -14,7 +14,28 @@ public class UserImplRepository implements UserRepository{
 
 
 	@Override
-	public void addUser(User user) {
+	public void addUser(String username, String password) {
+		var sqlCommand = "INSERT INTO user (`username`,`password`) VALUES (?,?)";
+
+		try (Connection connection = DatabaseUtil.connectToDb();
+				PreparedStatement statement = connection.prepareStatement(sqlCommand)) {
+
+			statement.setString(1, username);
+			statement.setString(2, password);
+
+			var rowsAffected = statement.executeUpdate();
+
+			if (rowsAffected > 0) {
+				System.out.println("Successfully created user.");
+			} else {
+				System.out.println("Failed to add expense.");
+			}
+
+		} catch (SQLException e) {
+			System.out.print("Please try again later...");
+			e.printStackTrace();
+		}
+
 
 	}
 

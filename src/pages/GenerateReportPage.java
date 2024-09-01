@@ -10,6 +10,7 @@ import entity.ExpenseType;
 import service.ExpenseService;
 import service.IncomeService;
 import service.SavingsService;
+import util.ExportCSVUtil;
 import util.InputValidation;
 import util.LoadingAnimation;
 
@@ -73,9 +74,14 @@ public class GenerateReportPage {
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.printf("%-20s%-20.2f%-20.2f%-20.2f%n", "TOTAL", totalExpectedExpenses, totalActualExpenses, totalExpensesDifference);
 
-		var actualSavings = calculateActualSavings(totalActualExpenses);
-		System.out.printf("%-20s%-20.2f%-20.2f%-20.2f%n", "Savings:", expectedSavings, actualSavings);
+		var totalIncome = incomeService.getTotalIncomeThisMonth(userId);
+		System.out.println();
+		System.out.printf("Total Income:%n%.2f\n", totalIncome);
+		var actualSavings = calculateActualSavings(totalIncome, totalActualExpenses);
+		System.out.printf("%-20s%-20.2f%-20.2f%n", "Savings:", expectedSavings, actualSavings);
 
+		ExportCSVUtil.exportToCSV(expectedExpenses, actualExpenses, totalExpectedExpenses,totalActualExpenses,
+				totalExpensesDifference, expectedSavings, actualSavings, totalIncome);
 		LoadingAnimation.pause();
 		scanner.nextLine();
 	}
@@ -91,10 +97,7 @@ public class GenerateReportPage {
 		return actualExpenses;
 	}
 
-	private Double calculateActualSavings(double totalExpenses) {
-		var totalIncome = incomeService.getTotalIncomeThisMonth(userId);
-		System.out.println();
-		System.out.printf("Total Income:%n%.2f\n", totalIncome);
+	private Double calculateActualSavings(double totalIncome, double totalExpenses) {
 		return totalIncome - totalExpenses;
 	}
 

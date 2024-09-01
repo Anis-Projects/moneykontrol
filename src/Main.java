@@ -7,6 +7,7 @@ import pages.IndexPage;
 import pages.LoginPage;
 import pages.MenuPage;
 import pages.SavingsPage;
+import pages.SignUpPage;
 import repository.ExpenseImplRepository;
 import repository.IncomeImplRepository;
 import repository.SavingsImplRepository;
@@ -31,6 +32,7 @@ public class Main {
 
 		var indexPage = new IndexPage(scanner);
 		var loginPage = new LoginPage(userService, scanner);
+		var signUpPage = new SignUpPage(userService, scanner);
 		var inputValidation = new InputValidation(scanner);
 
 		boolean isRunning = true;
@@ -85,7 +87,7 @@ public class Main {
 					}
 					break;
 				case 2:
-					System.out.println("You're in register");
+					signUpPage.display();
 					break;
 				case 5:
 					isRunning = false;
